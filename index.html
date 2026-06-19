@@ -2,9 +2,9 @@
 <html lang="it" data-level="eccellente">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="description" content="Tracker consapevole del consumo: media giornaliera, livelli di tolleranza e protezione della sensibilità." />
-  <title>Botta Consapevole</title>
+  <title>Status</title>
 
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#e9fff4" />
@@ -12,8 +12,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Botta" />
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="Status" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png" />
   <link rel="apple-touch-startup-image"
         media="screen and (device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
@@ -36,7 +36,7 @@
   <main class="app" role="application" aria-label="Tracker consapevole">
 
     <header class="topbar">
-      <span class="brand">BOTTA</span>
+      <span class="brand">STATUS</span>
       <button id="dataBtn" class="iconbtn" type="button" aria-label="Dati e backup">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>
@@ -52,6 +52,7 @@
       <div class="level">
         <p class="level__name" id="levelName">Eccellente</p>
         <p class="level__hint" id="levelHint">Sensibilità protetta. La botta è al massimo potenziale.</p>
+        <p class="climb" id="climb"></p>
       </div>
 
       <div class="dialwrap">
@@ -71,6 +72,8 @@
         <span class="sep"></span>
         <span><b id="totalValue">0</b><i>totale</i></span>
       </div>
+
+      <p class="suggest" id="suggest"></p>
     </section>
 
     <section class="bottom">

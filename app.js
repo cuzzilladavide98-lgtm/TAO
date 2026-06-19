@@ -149,6 +149,7 @@ const els = {
   historyBars: $('#historyBars'),
   historyRange: $('#historyRange'),
   lastSession: $('#lastSession'),
+  suggest: $('#suggest'),
   srLive: $('#srLive'),
   toast: $('#toast'),
   gate: $('#gate'),
@@ -322,6 +323,21 @@ function render(s, { announceLevel = false } = {}) {
   animateNumber(els.totalValue, stats.totaleSessioni, { decimals: 0 });
   els.lastSession.textContent = fmtSince(s.lastTapTs);
   els.tapBtn.setAttribute('aria-label', `Registra una sessione. Sessioni di oggi: ${s.todayCount}`);
+
+  // Suggerimento: quando potrai fare la prossima sessione SALENDO al livello migliore.
+  if (els.suggest) {
+    const i = livello.index;
+    if (i >= 1) {
+      const targetMax = LIVELLI[i - 1].maxMedia;                 // soglia del livello superiore
+      const d = Math.max(1, Math.ceil((stats.totaleSessioni + 1) / targetMax - stats.giorniTotali));
+      const data = new Date(); data.setDate(data.getDate() + d);
+      const ds = data.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
+      els.suggest.textContent = `↑ per salire a ${LIVELLI[i - 1].nome}: prossima sessione dal ${ds} (tra ${d} g)`;
+      els.suggest.style.display = '';
+    } else {
+      els.suggest.style.display = 'none';   // Eccellente: già al livello migliore
+    }
+  }
   els.dayLabel.textContent = `Giorno ${stats.giorniTotali}`;
   els.precisionFill.style.width = `${Math.round(stats.precisione * 100)}%`;
   els.undoBtn.disabled = s.todayTaps.length === 0;

@@ -7,7 +7,7 @@
    ===================================================================== */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; height: 100%; overflow: hidden; }
 
 :root {
   /* default = Eccellente (luce) */
@@ -20,11 +20,6 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   --breath-dur: 5.5s;
   --fray: 0;
 
-  --dim: color-mix(in srgb, var(--ink) 80%, transparent);
-  --faint: color-mix(in srgb, var(--ink) 70%, transparent);
-  --hair: color-mix(in srgb, var(--ink) 22%, transparent);
-  --hair-strong: color-mix(in srgb, var(--ink) 42%, transparent);
-
   --ease: cubic-bezier(.22,.61,.36,1);
   --press: cubic-bezier(.25,1,.5,1);
   --evolve: 1300ms;
@@ -36,9 +31,18 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 }
 
 body {
+  /* IMPORTANTE: i derivati stanno QUI (non in :root) così si ricalcolano
+     con l'--ink del livello corrente — altrimenti i testi secondari restano
+     del colore di Eccellente e spariscono sui fondi scuri. */
+  --dim: color-mix(in srgb, var(--ink) 82%, transparent);
+  --faint: color-mix(in srgb, var(--ink) 66%, transparent);
+  --hair: color-mix(in srgb, var(--ink) 24%, transparent);
+  --hair-strong: color-mix(in srgb, var(--ink) 44%, transparent);
+
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
   color: var(--ink);
   background: var(--bg-base);
+  width: 100%; height: 100%;
   min-height: 100vh; min-height: 100dvh;
   position: fixed; inset: 0; overflow: hidden;
   touch-action: manipulation; -webkit-tap-highlight-color: transparent;
@@ -88,7 +92,7 @@ body {
    ===================================================================== */
 .app {
   position: relative; z-index: 1;
-  height: 100dvh;
+  height: 100dvh; max-height: 100dvh; overflow: hidden;
   display: grid;
   grid-template-rows: auto 1fr auto;
   padding:
@@ -137,7 +141,7 @@ body {
 /* ---- Pulse (il numero è il cuore) ---- */
 .dialwrap { display:grid; place-items:center; }
 .pulse {
-  position:relative; width:min(66vw, 264px); aspect-ratio:1; border:none; background:none;
+  position:relative; width:min(58vw, 232px); aspect-ratio:1; border:none; background:none;
   display:grid; place-items:center; cursor:pointer; color:inherit; -webkit-appearance:none; appearance:none;
   transition: transform .14s var(--press);
 }
@@ -171,6 +175,9 @@ body {
 .stats b { font-size:17px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; transition: color var(--evolve) var(--ease); }
 .stats i { font-size:9.5px; font-style:normal; letter-spacing:1.2px; text-transform:uppercase; color:var(--faint); }
 .sep { width:1px; height:26px; background:var(--hair); }
+/* suggerimento "per risalire di livello" */
+.suggest { font-size:11.5px; font-weight:600; line-height:1.4; color:var(--accent); max-width:32ch;
+  margin:4px auto 0; min-height:1.2em; transition: color var(--evolve) var(--ease); }
 
 /* ---- Fascia inferiore ---- */
 .bottom { display:flex; flex-direction:column; align-items:center; gap:14px; }
@@ -335,8 +342,13 @@ body[data-level="terribile"] .mote { animation: deadFall var(--life-dur,5s) step
   *, *::before, *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.25s !important; }
   .splash { display:none !important; }
 }
-@media (max-height: 700px) {
-  .hero { gap:14px; }
-  .pulse { width:min(52vw, 196px); }
-  .level__hint { min-height:2.2em; }
+/* iPhone 13 mini (≈780px) e affini: comprime per far stare tutto senza scroll */
+@media (max-height: 820px) {
+  .app { padding-top: calc(var(--safe-top) + 8px); }
+  .hero { gap: 12px; }
+  .pulse { width:min(48vw, 184px); }
+  .pulse__count { font-size: clamp(56px, 20vw, 84px); }
+  .level__hint { min-height:2.2em; font-size:12px; }
+  .stats b { font-size:16px; }
+  .bottom { gap:10px; }
 }
