@@ -19,6 +19,7 @@ const PRECISION_DAYS = 21;
 const INACTIVITY_ROLLOVER_HOURS = 20;
 const HISTORY_WINDOW = 10;
 const DOUBLE_TAP_GUARD_MS = 800;
+const EFFECT_MS = (3 * 60 + 40) * 60 * 1000;   // durata dell'effetto: 3 ore e 40 minuti
 
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -150,6 +151,7 @@ const els = {
   historyRange: $('#historyRange'),
   lastSession: $('#lastSession'),
   suggest: $('#suggest'),
+  effect: $('#effect'),
   srLive: $('#srLive'),
   toast: $('#toast'),
   gate: $('#gate'),
@@ -297,6 +299,21 @@ function fmtSince(ts) {
   return `Ultima sessione: ${g}g fa`;
 }
 
+// Timer dell'effetto (3h40m): conto alla rovescia dall'ultima sessione.
+function fmtHMS(ms) {
+  const s = Math.max(0, Math.ceil(ms / 1000));
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+  return `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+}
+function updateEffect() {
+  if (!els.effect) return;
+  const ts = state.lastTapTs;
+  const remain = ts ? ts + EFFECT_MS - Date.now() : 0;
+  if (!ts || remain <= 0) { els.effect.style.display = 'none'; els.effect.textContent = ''; return; }
+  els.effect.style.display = 'inline-flex';
+  els.effect.textContent = `effetto · ${fmtHMS(remain)}`;
+}
+
 function render(s, { announceLevel = false } = {}) {
   const stats = computeStats(s);
   const livello = calcolaLivelloAttuale(stats);
@@ -409,6 +426,7 @@ function registraTocco(e) {
     );
   }
   announce(`Sessione registrata. Oggi: ${state.todayCount}.`);
+  updateEffect();                      // (ri)avvia il timer dell'effetto
 }
 
 function annullaTocco() {
@@ -421,6 +439,7 @@ function annullaTocco() {
   render(state, { announceLevel: true });
   toast('Ultima sessione annullata');
   announce(`Annullato. Sessioni di oggi: ${state.todayCount}.`);
+  updateEffect();
 }
 
 /* ---------------------------------------------------------------------
@@ -559,6 +578,7 @@ function applyImport(text) {
   saveState(state);
   lastLevelKey = null;
   render(state);
+  updateEffect();
   setBackupStatus('Dati ripristinati ✓');
   toast('Backup ripristinato');
 }
@@ -598,6 +618,7 @@ checkRollover(state);
 saveState(state);
 lastLevelKey = null;
 render(state);
+updateEffect();
 
 els.tapBtn.addEventListener('click', registraTocco);
 els.undoBtn.addEventListener('click', annullaTocco);
@@ -624,6 +645,7 @@ els.importFile.addEventListener('change', (e) => {
 });
 
 setInterval(tickRollover, 60 * 1000);
+setInterval(updateEffect, 1000);     // timer effetto: ticchetta ogni secondo
 document.addEventListener('visibilitychange', () => { if (!document.hidden) tickRollover(); });
 window.addEventListener('focus', tickRollover);
 window.addEventListener('pageshow', tickRollover);

@@ -170,6 +170,13 @@ body {
 
 /* ---- Ultima sessione + stats ---- */
 .last { font-size:12px; color:var(--dim); letter-spacing:.2px; transition: color var(--evolve) var(--ease); }
+/* timer dell'effetto (3h40m) — parte/riparte a ogni sessione */
+.effect { display:none; align-items:center; justify-content:center; gap:7px;
+  font-size:13px; font-weight:600; letter-spacing:.4px; color:var(--accent);
+  font-variant-numeric:tabular-nums; min-height:1.2em; transition: color var(--evolve) var(--ease); }
+.effect::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--accent);
+  box-shadow:0 0 8px var(--accent); animation: effectPulse 1.6s var(--ease) infinite; }
+@keyframes effectPulse { 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
 .stats { display:flex; align-items:center; justify-content:center; gap:16px; }
 .stats > span:not(.sep) { display:grid; gap:3px; }
 .stats b { font-size:17px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; transition: color var(--evolve) var(--ease); }
