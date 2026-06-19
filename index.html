@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it" data-level="eccellente">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Tracker consapevole del consumo: media giornaliera, livelli di tolleranza e protezione della sensibilità." />
+  <title>Botta Consapevole</title>
+
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#e9fff4" />
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Botta" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png" />
+  <link rel="apple-touch-startup-image"
+        media="screen and (device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+        href="icons/startup-1080x2340.png" />
+
+  <!-- Sfondo critico inline: il primo frame è già la luce del paradiso -->
+  <style>html,body{background-color:#e9fff4}</style>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-level="eccellente">
+
+  <div class="scene" aria-hidden="true"></div>
+  <div class="garden" aria-hidden="true">
+    <span class="mote m1"></span><span class="mote m2"></span><span class="mote m3"></span>
+    <span class="mote m4"></span><span class="mote m5"></span><span class="mote m6"></span>
+    <span class="mote m7"></span>
+  </div>
+  <div class="topscrim" aria-hidden="true"></div>
+
+  <main class="app" role="application" aria-label="Tracker consapevole">
+
+    <header class="topbar">
+      <span class="brand">BOTTA</span>
+      <button id="dataBtn" class="iconbtn" type="button" aria-label="Dati e backup">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>
+        </svg>
+      </button>
+      <span class="day">
+        <span id="dayLabel">Giorno 1</span>
+        <i class="prec"><i id="precisionFill"></i></i>
+      </span>
+    </header>
+
+    <section class="hero">
+      <div class="level">
+        <p class="level__name" id="levelName">Eccellente</p>
+        <p class="level__hint" id="levelHint">Sensibilità protetta. La botta è al massimo potenziale.</p>
+      </div>
+
+      <div class="dialwrap">
+        <button id="tapBtn" class="pulse" type="button" aria-label="Registra una sessione. Sessioni di oggi: 0">
+          <span class="pulse__fx" id="tapFx" aria-hidden="true"></span>
+          <span class="pulse__count" id="todayCount">0</span>
+          <span class="pulse__unit">oggi</span>
+        </button>
+      </div>
+
+      <p class="last" id="lastSession">Nessuna sessione ancora · inizia quando vuoi</p>
+
+      <div class="stats" aria-label="Statistiche">
+        <span><b id="avgValue">0.00</b><i>media/g</i></span>
+        <span class="sep"></span>
+        <span><b id="intervalValue">—</b><i>cadenza</i></span>
+        <span class="sep"></span>
+        <span><b id="totalValue">0</b><i>totale</i></span>
+      </div>
+    </section>
+
+    <section class="bottom">
+      <div class="histline" aria-label="Storico giorni">
+        <div class="histline__head"><span>Storico</span><span id="historyRange"></span></div>
+        <div class="histline__bars" id="historyBars"></div>
+      </div>
+
+      <button id="undoBtn" class="undo" type="button" aria-label="Annulla l'ultima sessione" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>
+        </svg>
+        Annulla
+      </button>
+
+      <p class="foot">Archiviazione automatica · offline · dati sul telefono</p>
+    </section>
+
+    <p class="sr-only" id="srLive" role="status" aria-live="polite"></p>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- ===== DATI E BACKUP ===== -->
+  <div class="sheet" id="historySheet" aria-hidden="true">
+    <div class="sheet__backdrop" data-close></div>
+    <div class="sheet__panel" role="dialog" aria-modal="true" aria-label="Dati e backup">
+      <div class="sheet__grab" data-close></div>
+      <header class="sheet__head">
+        <h2 class="sheet__title">Dati e backup</h2>
+        <button class="iconbtn" type="button" aria-label="Chiudi" data-close>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </header>
+
+      <div class="sheet__summary" id="backupSummary"></div>
+
+      <div class="sheet__sect">
+        <p class="sheet__lbl">Esporta</p>
+        <div class="btnrow">
+          <button class="bigbtn" id="btnExportShare" type="button">Condividi / Salva</button>
+          <button class="bigbtn bigbtn--ghost" id="btnExportCopy" type="button">Copia testo</button>
+        </div>
+        <p class="sheet__note">Salva il file di backup in un posto sicuro (app File, Note, email).</p>
+      </div>
+
+      <div class="sheet__sect">
+        <p class="sheet__lbl">Importa</p>
+        <label class="filelabel">Scegli un file di backup
+          <input type="file" id="importFile" accept="application/json,.json,.txt" hidden />
+        </label>
+        <textarea id="importText" class="importbox" placeholder="…oppure incolla qui il testo del backup" spellcheck="false"></textarea>
+        <button class="bigbtn bigbtn--danger" id="btnRestore" type="button">Ripristina dati</button>
+        <p class="sheet__note">Sostituisce i dati attuali sul telefono.</p>
+      </div>
+
+      <p class="sheet__status" id="backupStatus" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <!-- ===== INGRESSO: una parola per entrare (il tocco avvia la musica) ===== -->
+  <div class="gate" id="gate" role="button" tabindex="0" aria-label="Tocca per entrare nell'app">
+    <div class="gate__inner">
+      <p class="gate__kicker" id="gateKicker">una parola per entrare</p>
+      <h1 class="gate__word" id="gateWord">—</h1>
+      <p class="gate__pos" id="gatePos"></p>
+      <p class="gate__def" id="gateDef"></p>
+      <p class="gate__etim" id="gateEtim"></p>
+    </div>
+    <p class="gate__hint">tocca per entrare</p>
+  </div>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
