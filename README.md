@@ -1,56 +1,123 @@
-# Sentiero — Diario vocale (PWA per iPhone)
+# 🌿 Botta Consapevole
 
-Diario vocale con quest e task pianificate. Parli, l'IA estrae le quest, le fonde con quelle esistenti e scrive una voce di diario. Tutto resta sul tuo telefono (localStorage); l'unica chiamata esterna è all'API Anthropic, con la tua chiave.
+PWA a schermata unica per il **tracciamento consapevole del consumo**, pensata per la
+*riduzione del danno*: registri ogni sessione con un tocco, l'app calcola la tua media
+giornaliera e ti colloca su una scala scientifica a 7 livelli. L'interfaccia cambia
+radicalmente — da paradiso naturale a degrado glitch — in base alla frequenza, perché
+**l'intensità dell'effetto si preserva consumando meno e distanziando le sessioni**, non
+potenziando il singolo consumo.
 
-## Pubblicazione su GitHub Pages (5 minuti)
+Ottimizzata per **iPhone 13 mini** (notch + safe-area), installabile su iOS, funziona
+**100% offline** e **nessun dato lascia il dispositivo**.
 
-1. Crea un nuovo repository su GitHub, ad esempio `sentiero` (pubblico).
-2. Carica questi 6 file nella radice del repo: `index.html`, `manifest.json`, `sw.js`, `icon-180.png`, `icon-192.png`, `icon-512.png`. Puoi farlo da browser con "Add file → Upload files".
-3. Vai in **Settings → Pages**, in "Build and deployment" scegli **Deploy from a branch**, branch `main`, cartella `/ (root)`, salva.
-4. Dopo 1-2 minuti l'app è online su `https://TUOUSERNAME.github.io/sentiero/`.
+---
 
-## Installazione su iPhone
+> [!IMPORTANT]
+> **Disclaimer.** Strumento personale di auto-monitoraggio a scopo di riduzione del danno,
+> destinato a persone **maggiorenni (18+)** in contesti in cui il consumo è legale.
+> Non è un dispositivo medico, non fornisce diagnosi né consigli sanitari, non incoraggia
+> il consumo. La scala dei livelli è una sintesi divulgativa della letteratura citata in
+> fondo: per qualsiasi decisione di salute rivolgiti a un professionista.
 
-1. Apri l'URL in **Safari** (deve essere Safari, non Chrome).
-2. Tocca **Condividi → Aggiungi alla schermata Home**.
-3. Apri l'app dall'icona: parte a schermo intero come un'app nativa.
-4. Al primo tocco del microfono, concedi il permesso al microfono e al riconoscimento vocale.
+---
 
-## Configurazione IA
+## ✨ Caratteristiche
 
-1. Crea una chiave API su `console.anthropic.com` (servono pochi euro di credito; ogni elaborazione costa frazioni di centesimo).
-2. Nell'app: tab **Altro → Chiave API → Salva**. La chiave resta solo nel browser del tuo telefono.
-3. Senza chiave l'app funziona comunque: salva il trascritto grezzo nel diario, senza estrazione quest.
+- **Un tocco = una sessione.** Pulsante centrale grande; la media si aggiorna all'istante.
+- **Annulla** l'ultimo tocco in caso di errore, con ricalcolo immediato.
+- **Zero reset manuale.** Il giorno si chiude da solo (mezzanotte / lunga inattività): i
+  dati finiscono nello storico e i giorni di astinenza abbassano correttamente la media.
+- **7 livelli** da *Eccellente* a *Terribile*, con UI che evolve per colori, forme e micro-animazioni.
+- **Offline-first** via Service Worker + **installabile** (Aggiungi a Home su iOS/Android).
+- **Privacy totale:** solo `localStorage`, nessun server, nessun account, nessun tracker.
 
-## L'esperienza: un circuito chiuso
+## 📊 Scala dei livelli
 
-**Rilascia → Distilla → Compi → Sigilla.**
-- Tocchi l'enso e parli (suono di campana che sale, onde sul cerchio).
-- "Distilla": il trascritto evapora e le quest si materializzano una a una, con suono.
-- Ogni completamento: spunta con macchia d'inchiostro, nota pentatonica e una parola pronunciata a voce. Le combo ravvicinate fanno salire la scala: Fatto → Bene → Ottimo → Eccellente → Sublime → Tao.
-- L'enso attorno al microfono è anche la barra di progresso del giorno: si chiude man mano che completi. Al 100%: gong, sigillo rosso, "Cerchio chiuso" e la streak di giorni sale.
-- Due temi sonori in Altro → Esperienza: **Arcade** (default: coin alla nascita delle quest, power-up sul microfono, pop+arpeggio quadro sulle combo, fanfara di fine livello al sigillo, voce dell'annunciatore che si esalta col combo) e **Zen** (campane pentatoniche e gong). Cambiando tema senti subito un'anteprima.
-- Suoni, voce e micro-shake si controllano in Altro → Esperienza; tutto rispetta "Riduci movimento" di iOS.
+Il livello deriva dalla **media di sessioni al giorno** (`sessioni totali ÷ giorni tracciati`).
+Le cadenze di riferimento provengono dal documento scientifico in *Fonti*.
 
-## Come funziona
+| Livello | Cadenza indicativa | Media / giorno | Stile UI |
+|---|---|---|---|
+| **Eccellente** | ~1 ogni 3 settimane | ≤ 0.05 | Paradiso naturale: fiori, lucciole, pulsazioni morbide |
+| **Sublime** | ~1 ogni 2 settimane | ≤ 0.10 | Candy onirico/psichedelico |
+| **Standard** | ~1 a settimana | ≤ 0.20 | Candy pop pastello |
+| **Abitudinario** | più volte a settimana | ≤ 0.45 | Pastelli che si spengono |
+| **Hard** | ~1 ogni 2 giorni | ≤ 0.70 | Virata grigia, animazioni rigide |
+| **Inutile** | ~1 al giorno | ≤ 1.40 | Quasi monocromo, spento |
+| **Terribile** | più sessioni al giorno | > 1.40 | Degrado caotico: glitch, distorsione |
 
-- **Oggi**: tocca il cerchio (enso) e parla; ritocca per fermare; "Elabora e salva" invia il trascritto all'IA. Le quest nuove vengono create, quelle esistenti aggiornate o segnate come fatte se lo dici a voce.
-- **Task pianificate**: in **Altro** definisci task ricorrenti (es. "80 g proteine" ogni giorno, "Sveglia alle 7" lun-ven). Compaiono automaticamente in **Oggi** nei giorni scelti, con spunta giornaliera.
-- **Diario**: una voce per ogni registrazione elaborata, in ordine cronologico inverso, con il trascritto originale conservato sotto.
-- **Backup**: esporta/importa tutto in JSON da **Altro → Dati**. Consigliato farlo periodicamente, perché i dati vivono nel localStorage di Safari.
+La **precisione** della stima cresce fino al massimo dopo ~21 giorni di tracciamento
+(finestra di risensibilizzazione dei recettori CB1).
 
-## Qualità e collaudo
+## 🛠️ Stack
 
-Due livelli di test automatici:
+HTML5 · CSS3 nativo (custom properties, `color-mix`, safe-area) · JavaScript ESNext
+(moduli, nessun framework) · Web App Manifest · Service Worker. **Zero build, zero dipendenze.**
 
-1. **Nucleo logico** (`dev/fuzz.test.js`): la logica pura — sigillo, streak, rollover del giorno, priorità e ordinamento, sanitizzazione di stato/IA/posizione, accumulo del trascritto, promemoria, potatura spazio — è isolata e martellata con oltre 44 milioni di verifiche su input casuali e ostili, più test di mutazione (bug iniettati deliberatamente, tutti catturati).
+## 📁 Struttura
 
-2. **Interfaccia reale** (`dev/dom.test.js`): un mini-ambiente DOM senza dipendenze monta il vero codice dell'app e simula migliaia di sessioni di interazioni casuali (tap su quest, spunte, eliminazioni, cambi tab, scroll, switch impostazioni, distillazioni offline), verificando dopo ogni azione che il DOM resti coerente: nessun nodo orfano, nessun NaN nel rendering dell'enso, testata sempre presente. Oltre 157.000 verifiche DOM, zero fallimenti.
+```
+.
+├── index.html              # Struttura SPA + meta Apple/PWA
+├── styles.css              # 7 temi, animazioni, degrado visivo
+├── app.js                  # Logica: tap, undo, rollover, persistenza, livelli
+├── sw.js                   # Service Worker (offline-first)
+├── manifest.webmanifest    # Manifest PWA
+├── icons/                  # 192 / 512 maskable + apple-touch-icon 180
+└── .github/workflows/      # Deploy automatico su GitHub Pages
+```
 
-Si rilanciano con `node dev/fuzz.test.js` e `node dev/dom.test.js`.
+## ▶️ Uso in locale
 
-## Limiti noti su iOS
+Le funzioni PWA (Service Worker) richiedono `https` **oppure** `localhost`. Apri un server statico:
 
-- Il riconoscimento vocale di Safari a volte si interrompe da solo: l'app lo riavvia automaticamente finché non tocchi tu per fermare.
-- I promemoria con notifica (attivabili in Altro) funzionano sull'app installata in Home (iOS 16.4+); scattano agli orari delle task se l'app è stata aperta nella giornata. Per push garantiti anche ad app chiusa serve un piccolo server: estensione possibile in futuro.
-- Se Safari resta inutilizzato per molte settimane, iOS può svuotare il localStorage: usa l'export di backup.
+```bash
+# Python
+python3 -m http.server 8080
+# oppure Node
+npx serve .
+```
+
+Poi visita `http://localhost:8080`.
+
+## 🚀 Deploy su GitHub Pages
+
+Il repo include un workflow che pubblica automaticamente a ogni push su `main`.
+
+1. Push del codice su GitHub (vedi sotto).
+2. **Settings → Pages → Build and deployment → Source: GitHub Actions.**
+3. Al push, l'app è online su `https://<utente>.github.io/<repo>/`.
+
+Tutti i percorsi sono **relativi**, quindi l'app funziona correttamente anche servita da
+una sottocartella (come fa Pages). Su iPhone: apri il link in **Safari → Condividi →
+Aggiungi a Home** per installarla a schermo intero.
+
+## ⚙️ Personalizzazione
+
+- **Soglie dei livelli:** modifica l'array `LIVELLI` in `app.js` (campo `maxMedia`).
+- **Formula:** la funzione `calcolaLivelloAttuale()` è il punto di integrazione unico —
+  riceve `{ mediaGiornaliera, giorniTotali, totaleSessioni }` e restituisce il livello.
+- **Temi/animazioni:** in `styles.css`, blocchi `body[data-level="…"]` (token) e
+  `.scene--…` (sfondi). Il degrado è guidato dalle variabili `--decay`, `--anim-speed`,
+  `--saturate`, `--skew`.
+
+## 🔒 Privacy
+
+Nessun dato esce dal dispositivo: storico, conteggi e livello sono salvati solo in
+`localStorage`. Nessuna analitica, nessun cookie, nessuna chiamata di rete oltre al
+caricamento dei file statici dell'app.
+
+## 📚 Fonti scientifiche
+
+La scala e le note divulgative sintetizzano, tra le altre:
+
+- *Mechanisms of Cannabinoid Tolerance* — PMC/NIH: <https://pmc.ncbi.nlm.nih.gov/articles/PMC10528043/>
+- *Rapid Changes in CB1 Receptor Availability in Cannabis Users* — PubMed: <https://pubmed.ncbi.nlm.nih.gov/26858993/>
+- *Reversible and regionally selective downregulation of brain CB1* — PubMed: <https://pubmed.ncbi.nlm.nih.gov/21747398/>
+- *Risk-thresholds for frequency of cannabis use and psychotic outcomes* — PMC: <https://pmc.ncbi.nlm.nih.gov/articles/PMC10317818/>
+- *Canada's Lower-Risk Cannabis Use Guidelines* — Canada.ca: <https://www.canada.ca/en/health-canada/services/drugs-medication/cannabis/resources/lower-risk-cannabis-use-guidelines.html>
+- *Cannabis Use Disorder* — StatPearls/NCBI: <https://www.ncbi.nlm.nih.gov/books/NBK538131/>
+
+## 📄 Licenza
+
+[MIT](LICENSE) © 2026 Davide
